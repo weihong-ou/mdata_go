@@ -52,6 +52,7 @@ func (self *MdHandler) Namespaces() []string {
 	return []string{mdata_state.Namespace}
 }
 
+//Signature before interfaces:
 func (self *MdHandler) Apply(request *processor_pb2.TpProcessRequest, context *processor.Context) error {
 
 	// type TpProcessRequest struct {
@@ -90,7 +91,7 @@ func (self *MdHandler) Apply(request *processor_pb2.TpProcessRequest, context *p
 	mdState := mdata_state.NewMdState(context)
 
 	logger.Debugf("mdata txn %v: signer %v: payload: Action='%v', Gtin='%v', Material='%v'",
-		request.Signature, signer, payload.Gtin, payload.Mtrl)
+		request.GetSignature(), signer, payload.Gtin, payload.Mtrl)
 
 	switch payload.Action {
 	case "create":
@@ -99,8 +100,9 @@ func (self *MdHandler) Apply(request *processor_pb2.TpProcessRequest, context *p
 			return err
 		}
 		product := &mdata_state.Product{
-			Gtin: payload.Gtin,
-			Mtrl: payload.Mtrl,
+			Gtin:  payload.Gtin,
+			Mtrl:  payload.Mtrl,
+			State: "ACTIVE",
 		}
 		displayCreate(payload, signer)
 		return mdState.SetProduct(payload.Gtin, product)
@@ -111,16 +113,23 @@ func (self *MdHandler) Apply(request *processor_pb2.TpProcessRequest, context *p
 		}
 		return mdState.DeleteProduct(payload.Gtin)
 	case "update":
-		err := validateUpdate(mdState, payload)
+		err := validateUpdate(mdState, payload.Gtin)
 		if err != nil {
 			return err
 		}
-		product, err := mdState.GetProduct(payload.Gtin)
-		if err != nil {
-			return err
-		}
+		product, _ := mdState.GetProduct(payload.Gtin) //err is not needed here, as it is checked in the validateUpdate function
 		product.Mtrl = payload.Mtrl
+		product.State = "ACTIVE"
 		displayUpdate(payload, signer, product)
+		return mdState.SetProduct(payload.Gtin, product)
+	case "deactivate":
+		err := validateDeactivate(mdState, payload.Gtin)
+		if err != nil {
+			return err
+		}
+		product, _ := mdState.GetProduct(payload.Gtin) //err is not needed here, as it is checked in the validateDeactivate function
+		product.State = "INACTIVE"
+		displayDeactivate(payload, signer, product)
 		return mdState.SetProduct(payload.Gtin, product)
 	default:
 		return &processor.InvalidTransactionError{
@@ -149,8 +158,8 @@ func displayCreate(payload *mdata_payload.MdPayload, signer string) {
 	fmt.Println(border)
 }
 
-func validateUpdate(mdState *mdata_state.MdState, payload *mdata_payload.MdPayload) error {
-	product, err := mdState.GetProduct(payload.Gtin)
+func validateUpdate(mdState *mdata_state.MdState, gtin string) error {
+	product, err := mdState.GetProduct(gtin)
 	if err != nil {
 		return err
 	}
@@ -161,7 +170,27 @@ func validateUpdate(mdState *mdata_state.MdState, payload *mdata_payload.MdPaylo
 }
 
 func displayUpdate(payload *mdata_payload.MdPayload, signer string, product *mdata_state.Product) {
-	s := fmt.Sprintf("+ Player %s updated product %s to material %s+", signer[:6], product.Gtin, payload.Mtrl)
+	s := fmt.Sprintf("+ Signer %s updated product %s to material %s+", signer[:6], product.Gtin, payload.Mtrl)
+	sLength := len(s)
+	border := "+" + strings.Repeat("-", sLength-2) + "+"
+	fmt.Println(border)
+	fmt.Println(s)
+	fmt.Println(border)
+}
+
+func validateDeactivate(mdState *mdata_state.MdState, gtin string) error {
+	product, err := mdState.GetProduct(gtin)
+	if err != nil {
+		return err
+	}
+	if product == nil {
+		return &processor.InvalidTransactionError{Msg: "Deactivate requires an existing product"}
+	}
+	return nil
+}
+
+func displayDeactivate(payload *mdata_payload.MdPayload, signer string, product *mdata_state.Product) {
+	s := fmt.Sprintf("+ Signer %s updated product %s state to %s+", signer[:6], product.Gtin, product.State)
 	sLength := len(s)
 	border := "+" + strings.Repeat("-", sLength-2) + "+"
 	fmt.Println(border)
@@ -176,6 +205,9 @@ func validateDelete(mdState *mdata_state.MdState, gtin string) error {
 	}
 	if product == nil {
 		return &processor.InvalidTransactionError{Msg: "Delete requires an existing product"}
+	}
+	if product.State != "INACTIVE" {
+		return &processor.InvalidTransactionError{Msg: "Delete requires an INACTIVE product. Please deactivate the product with `mdata deactivate <GTIN>`."}
 	}
 	return nil
 }

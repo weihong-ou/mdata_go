@@ -28,6 +28,12 @@ import (
 	"github.com/hyperledger/sawtooth-sdk-go/processor"
 )
 
+type context interface {
+	GetState([]string) (map[string][]byte, error)
+	DeleteState([]string) ([]string, error)
+	SetState(map[string][]byte) ([]string, error)
+}
+
 /* Namespace prefix is six hex characters, or three bytes
 All data under a namespace prefix follows a consistent address and data encoding/serialization schem that is determined
 by the transaction family which defines the namespace
@@ -35,14 +41,15 @@ by the transaction family which defines the namespace
 var Namespace = hexdigest("mdata")[:6]
 
 type Product struct {
-	Gtin string
-	Mtrl string
+	Gtin  string
+	Mtrl  string
+	State string
 }
 
 // MdState handles addressing, serialization, deserialization,
 // and holding an addressCache of data at the address.
 type MdState struct {
-	context      *processor.Context
+	context      context
 	addressCache map[string][]byte
 }
 
@@ -150,14 +157,15 @@ func deserialize(data []byte) (map[string]*Product, error) {
 	products := make(map[string]*Product)
 	for _, str := range strings.Split(string(data), "|") {
 		parts := strings.Split(string(str), ",")
-		if len(parts) != 2 {
+		if len(parts) < 3 { //Product must include 3 attributes
 			return nil, &processor.InternalError{
 				Msg: fmt.Sprintf("Malformed product data: '%v'", string(data))}
 		}
 
 		product := &Product{
-			Gtin: parts[0],
-			Mtrl: parts[1],
+			Gtin:  parts[0],
+			Mtrl:  parts[1],
+			State: parts[2],
 		}
 		products[parts[0]] = product
 	}
@@ -170,6 +178,8 @@ func serialize(products []*Product) []byte {
 		buffer.WriteString(product.Gtin)
 		buffer.WriteString(",")
 		buffer.WriteString(product.Mtrl)
+		buffer.WriteString(",")
+		buffer.WriteString(product.State)
 		if i+1 != len(products) {
 			buffer.WriteString("|")
 		}
@@ -177,8 +187,8 @@ func serialize(products []*Product) []byte {
 	return buffer.Bytes()
 }
 
-func makeAddress(name string) string {
-	return Namespace + hexdigest(name)[:64]
+func makeAddress(gtin string) string {
+	return Namespace + hexdigest(gtin)[:64]
 }
 
 func hexdigest(str string) string {
