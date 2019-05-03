@@ -19,8 +19,8 @@ package handler
 
 import (
 	"fmt"
-	"mdata_go/mdata_payload"
-	"mdata_go/mdata_state"
+	"mdata_go/src/mdata_processor/mdata_payload"
+	"mdata_go/src/mdata_processor/mdata_state"
 	"strings"
 
 	"github.com/hyperledger/sawtooth-sdk-go/logging"
@@ -90,8 +90,8 @@ func (self *MdHandler) Apply(request *processor_pb2.TpProcessRequest, context *p
 	// may not share the same messaging.Connection object.
 	mdState := mdata_state.NewMdState(context)
 
-	logger.Debugf("mdata txn %v: signer %v: payload: Action='%v', Gtin='%v', Material='%v'",
-		request.GetSignature(), signer, payload.Gtin, payload.Mtrl)
+	logger.Debugf("mdata txn %v: signer %v: payload: Action='%v', Gtin='%v', Attributes='%v'",
+		request.GetSignature(), signer, payload.Action, payload.Gtin, payload.Attributes)
 
 	switch payload.Action {
 	case "create":
@@ -100,9 +100,9 @@ func (self *MdHandler) Apply(request *processor_pb2.TpProcessRequest, context *p
 			return err
 		}
 		product := &mdata_state.Product{
-			Gtin:  payload.Gtin,
-			Mtrl:  payload.Mtrl,
-			State: "ACTIVE",
+			Gtin:       payload.Gtin,
+			Attributes: mdata_state.DeserializeAttributes(payload.Attributes),
+			State:      "ACTIVE",
 		}
 		displayCreate(payload, signer)
 		return mdState.SetProduct(payload.Gtin, product)
@@ -118,18 +118,18 @@ func (self *MdHandler) Apply(request *processor_pb2.TpProcessRequest, context *p
 			return err
 		}
 		product, _ := mdState.GetProduct(payload.Gtin) //err is not needed here, as it is checked in the validateUpdate function
-		product.Mtrl = payload.Mtrl
+		product.Attributes = mdata_state.DeserializeAttributes(payload.Attributes)
 		product.State = "ACTIVE"
 		displayUpdate(payload, signer, product)
 		return mdState.SetProduct(payload.Gtin, product)
-	case "deactivate":
-		err := validateDeactivate(mdState, payload.Gtin)
+	case "set":
+		err := validateStateChange(mdState, payload.Gtin, payload.State)
 		if err != nil {
 			return err
 		}
 		product, _ := mdState.GetProduct(payload.Gtin) //err is not needed here, as it is checked in the validateDeactivate function
-		product.State = "INACTIVE"
-		displayDeactivate(payload, signer, product)
+		product.State = payload.State
+		displayStateChange(payload, signer, product)
 		return mdState.SetProduct(payload.Gtin, product)
 	default:
 		return &processor.InvalidTransactionError{
@@ -170,7 +170,7 @@ func validateUpdate(mdState *mdata_state.MdState, gtin string) error {
 }
 
 func displayUpdate(payload *mdata_payload.MdPayload, signer string, product *mdata_state.Product) {
-	s := fmt.Sprintf("+ Signer %s updated product %s to material %s+", signer[:6], product.Gtin, payload.Mtrl)
+	s := fmt.Sprintf("+ Signer %s updated product %s with attributes %s", signer[:6], product.Gtin, product.Attributes)
 	sLength := len(s)
 	border := "+" + strings.Repeat("-", sLength-2) + "+"
 	fmt.Println(border)
@@ -178,18 +178,19 @@ func displayUpdate(payload *mdata_payload.MdPayload, signer string, product *mda
 	fmt.Println(border)
 }
 
-func validateDeactivate(mdState *mdata_state.MdState, gtin string) error {
+func validateStateChange(mdState *mdata_state.MdState, gtin string, action string) error {
 	product, err := mdState.GetProduct(gtin)
 	if err != nil {
 		return err
 	}
 	if product == nil {
-		return &processor.InvalidTransactionError{Msg: "Deactivate requires an existing product"}
+		return &processor.InvalidTransactionError{Msg: "Set state requires an existing product"}
 	}
+
 	return nil
 }
 
-func displayDeactivate(payload *mdata_payload.MdPayload, signer string, product *mdata_state.Product) {
+func displayStateChange(payload *mdata_payload.MdPayload, signer string, product *mdata_state.Product) {
 	s := fmt.Sprintf("+ Signer %s updated product %s state to %s+", signer[:6], product.Gtin, product.State)
 	sLength := len(s)
 	border := "+" + strings.Repeat("-", sLength-2) + "+"
