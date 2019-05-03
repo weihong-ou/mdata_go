@@ -1,4 +1,3 @@
 *.drawio
 
-.vscode
-.vscode/*
+*.vscode*
