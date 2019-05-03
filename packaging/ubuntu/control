@@ -1,0 +1,11 @@
+Source: sawtooth-mdata-tp-go
+Maintainer: theadora.ross@tyson.com
+Section: go
+Priority: optional
+Standards-Version: 3.9.6
+Homepage: https://github.com/tross-tyson/mdata_go
+Package: sawtooth-mdata-tp-go
+Architecture: all
+Depends: libssl-dev, libzmq3-dev
+Description: Sawtooth Mdata TP Go
+Version: @VERSION@
