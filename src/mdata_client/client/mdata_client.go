@@ -171,22 +171,22 @@ func (mdataClient MdataClient) Set(
 	return mdataClient.sendTransaction(c, wait)
 }
 
-func (mdataClient MdataClient) List() ([]byte, error) {
+func (mdataClient MdataClient) List() ([]string, error) {
 
 	// API to call
 	apiSuffix := fmt.Sprintf("%s?address=%s",
 		constants.STATE_API, mdataClient.getPrefix())
 	response, err := mdataClient.sendRequest(apiSuffix, []byte{}, "", "")
 	if err != nil {
-		return []byte{}, err
+		return []string{}, err
 	}
 
-	var toReturn []byte
+	var toReturn []string
 
 	responseMap := make(map[interface{}]interface{})
 	err = yaml.Unmarshal([]byte(response), &responseMap)
 	if err != nil {
-		return []byte{},
+		return []string{},
 			errors.New(fmt.Sprintf("Error reading response: %v", err))
 	}
 	encodedEntries := responseMap["data"].([]interface{})
@@ -194,23 +194,23 @@ func (mdataClient MdataClient) List() ([]byte, error) {
 	for _, entry := range encodedEntries {
 		entryData, ok := entry.(map[interface{}]interface{})
 		if !ok {
-			return []byte{},
+			return []string{},
 				errors.New("Error reading entry data")
 		}
 
 		stringData, ok := entryData["data"].(string)
 		if !ok {
-			return []byte{},
+			return []string{},
 				errors.New("Error reading string data")
 		}
 
 		decodedBytes, err := base64.StdEncoding.DecodeString(stringData)
 		if err != nil {
-			return []byte{},
+			return []string{},
 				errors.New(fmt.Sprint("Error decoding: %v", err))
 		}
 
-		toReturn = append(toReturn, decodedBytes...)
+		toReturn = append(toReturn, string(decodedBytes))
 	}
 	return toReturn, nil
 }
@@ -383,7 +383,7 @@ func (mdataClient MdataClient) getPrefix() string {
 
 func (mdataClient MdataClient) getAddress(gtin string) string {
 	prefix := mdataClient.getPrefix()
-	productAddress := Sha512HashValue(gtin)[constants.FAMILY_VERB_ADDRESS_LENGTH:]
+	productAddress := Sha512HashValue(gtin)[:constants.FAMILY_VERB_ADDRESS_LENGTH]
 	return prefix + productAddress
 }
 
