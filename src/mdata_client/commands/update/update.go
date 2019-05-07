@@ -55,7 +55,7 @@ func (args *Update) Register(parent *flags.Command) error {
 func (args *Update) Run() error {
 	// Construct client
 	gtin := args.Args.Gtin
-	attributes := args.Args.Attributes
+	attributes := args.Attributes
 	wait := args.Wait
 
 	mdataClient, err := client.GetClient(args, true)
