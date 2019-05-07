@@ -42,7 +42,7 @@ func (p MdPayload) invaildChar() (bool, string) {
 
 func (p *MdPayload) invalidAttributes() bool {
 	//Return false for empty attributes
-	if p.Action != "update" && len(p.Attributes) == 1 && p.Attributes[0] == "" {
+	if len(p.Attributes) == 1 && p.Attributes[0] == "" {
 		return false
 	}
 
@@ -115,15 +115,15 @@ func FromBytes(payloadData []byte) (*MdPayload, error) {
 		return nil, &processor.InvalidTransactionError{Msg: "Gtin-14 is required"}
 	}
 
-	if payload.invalidAttributes() {
-		return nil, &processor.InvalidTransactionError{
-			Msg: fmt.Sprintf("Invalid attributes (attributes must be in key=value pairs): %v", payload.Attributes)}
-	}
-
 	if payload.Action == "update" {
 		if len(payload.Attributes) < 1 {
 			return nil, &processor.InvalidTransactionError{Msg: "Attributes are required for update"}
 		}
+	}
+
+	if payload.invalidAttributes() {
+		return nil, &processor.InvalidTransactionError{
+			Msg: fmt.Sprintf("Invalid attributes (attributes must be in key=value pairs): %v", payload.Attributes)}
 	}
 
 	if payload.Action == "set" {
