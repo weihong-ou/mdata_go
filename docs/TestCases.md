@@ -1,0 +1,12 @@
+| Command |Test Case | Expected Result | Actual Result | Pass/Fail |
+|---|---|---|---|---|
+|Create|`go run main.go create "11112222333345" -a "uom:cases"`|Product created|Product created|PASS|
+|Create|`go run main.go create "11112222333345" -a "uom:cases"`|Duplicate not created|Duplicate not created|PASS|
+|Create|`go run main.go create "55555555555555" -a "uom:cases"`|Product created|Product created|PASS|
+|Create|`go run main.go create "555" -a "uom:cases"`|Fail to create product: invalid GTIN|`(2850718a-3db4-48c5-927b-73d342706b44 <nil>) Invalid transaction: Gtin-14 is required`|PASS|
+|Update|`go run main.go update "11112222333345" "uom:lbs"`|Product 11112222333345 updated attributes|`Failed to find the existing product to update`<br><br>`2019/05/07 14:51:47.003242 worker.go:75: [WARN] (2850718a-3db4-48c5-927b-73d342706b44 <nil>) Invalid transaction: Update requires an existing product` <br><br>This test eventually passed, probably after reaching consensus<br>`Signer 0298c6 updated product 11112222333345 with attributes map[uom:lbs]`|PASS|
+|Set|`go run main.go set "11111111111111" INACTIVE`|Product 11111111111111 set to INACTIVE|`go run main.go list`<br>`GTIN            ATTRIBUTES                                      STATE`<br>`11111111111111  [uom=cases]     INACTIVE`|PASS|
+|Set|`go run main.go set "11111111111111" DISCONTINUED`|Product 11111111111111 set to DISCONTINUED|It took some time to reach consensus but eventually:<br>`go run main.go list`<br>`GTIN            ATTRIBUTES                                      STATE`<br>`11111111111111  [uom=cases]     DISCONTINUED`|PASS|
+|Delete|`go run main.go delete "22222222222222"`|`go run main.go delete  "22222222222222"`|Needed more visibility (a sprintF) to determine that a product was deleted, but ultimately list() pulled through and showed the product had been deleted:<br>`go run main.go list`<br><br>`GTIN            ATTRIBUTES                                      STATE`<br>`11111111111111  [uom=cases]     DISCONTINUED`|PASS|
+|List| `go run main.go list`| List all products|Display a list of products, their attributes, and state|PASS|
+|Show|`go run main.go show "11112222333345"`|Show attributes and state of product|`[uom=lbs ACTIVE]`|PASS|

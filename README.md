@@ -89,3 +89,9 @@ sudo mv config.batch ~/ &&\
 cd &&\
 sudo -u sawtooth sawadm genesis config-genesis.batch config.batch
 ```
+
+# Manual Testing Results
+Read @ [here](docs/TestCases.md)
+
+# Enhancements
+Please review the Issues for enhancements to this project.
