@@ -116,7 +116,7 @@ func FromBytes(payloadData []byte) (*MdPayload, error) {
 	}
 
 	if payload.Action == "update" {
-		if len(payload.Attributes) < 1 {
+		if len(payload.Attributes) < 1 || payload.Attributes[0] == "" {
 			return nil, &processor.InvalidTransactionError{Msg: "Attributes are required for update"}
 		}
 	}
