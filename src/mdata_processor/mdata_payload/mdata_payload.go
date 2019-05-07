@@ -42,7 +42,7 @@ func (p MdPayload) invaildChar() (bool, string) {
 
 func (p *MdPayload) invalidAttributes() bool {
 	//Return false for empty attributes
-	if len(p.Attributes) == 1 && p.Attributes[]=="" {
+	if len(p.Attributes) == 1 && p.Attributes[0] == "" {
 		return false
 	}
 
