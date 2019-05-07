@@ -64,6 +64,11 @@ var testPayloads = map[string]struct {
 		outPayload: nil,
 		outError:   &sampleError,
 	},
+	"set": { //Set state to INACTIVE => OK
+		in:         []byte("set,00012345600012,,INACTIVE"),
+		outPayload: &MdPayload{Action: "set", Gtin: "00012345600012", State: "INACTIVE"},
+		outError:   nil,
+	},
 	"invalidCharAttr": { //Invalid character '|'  => Err
 		in:         []byte("update,00012345600012,uom=lbs,weight=3|00,"),
 		outPayload: nil,

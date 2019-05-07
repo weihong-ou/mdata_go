@@ -93,7 +93,8 @@ func (c *MdataClientAction) serializePayload() string {
 		attributes = append(attributes, fmt.Sprintf("%v=%v", k, v))
 	}
 
-	return fmt.Sprintf("%v,%v,%v,%v", c.action,
+	return fmt.Sprintf("%v,%v,%v,%v",
+		c.action,
 		c.gtin,
 		strings.Join(attributes, ","),
 		c.state)

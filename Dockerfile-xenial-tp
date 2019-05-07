@@ -43,7 +43,7 @@ ENV PATH=$PATH:/project/bin:/go/bin:/usr/lib/go-1.9/bin
 RUN mkdir /go
 
 RUN go get -u \
-    google.golang.org/grpc && \
+    google.golang.org/grpc \
     github.com/golang/protobuf/proto \
     github.com/golang/protobuf/protoc-gen-go \
     github.com/pebbe/zmq4 \
@@ -55,8 +55,8 @@ RUN go get -u \
     github.com/golang/mock/mockgen \
     github.com/hyperledger/sawtooth-sdk-go \
     golang.org/x/crypto/ssh \
-    gopkg.in/yaml.v21 \
-    go get github.com/stretchr/testify/mock && 
+    gopkg.in/yaml.v2 \
+    github.com/stretchr/testify/mock 
 
 COPY . /go/src/mdata_go
 

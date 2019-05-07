@@ -24,12 +24,12 @@ import (
 
 type Update struct {
 	Args struct {
-		Gtin       string            `positional-arg-name:"gtin" required:"true" description:"Identify the gtin of the product to update"`
-		Attributes map[string]string `long:"attributes" short:"a" required:"true" description:"Specify key:value pair to define product attributes"`
+		Gtin string `positional-arg-name:"gtin" required:"true" description:"Identify the gtin of the product to update"`
 	} `positional-args:"true"`
-	Url     string `long:"url" description:"Specify URL of REST API"`
-	Keyfile string `long:"keyfile" description:"Identify file containing user's private key"`
-	Wait    uint   `long:"wait" description:"Set time, in seconds, to wait for transaction to commit"`
+	Attributes map[string]string `long:"attributes" short:"a" required:"true" description:"Specify key:value pair to define product attributes"`
+	Url        string            `long:"url" description:"Specify URL of REST API"`
+	Keyfile    string            `long:"keyfile" description:"Identify file containing user's private key"`
+	Wait       uint              `long:"wait" description:"Set time, in seconds, to wait for transaction to commit"`
 }
 
 func (args *Update) Name() string {

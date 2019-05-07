@@ -69,7 +69,7 @@ func (p *MdPayload) invalidGtin() bool {
 
 func (p *MdPayload) invalidState() bool {
 	// Verify the state setting is valid: one of ACTIVE, INACTIVE, DISCONTINUED
-	validStates := []string{"ACTIVE", "INACTIVE", "DISCONTINUED", ""}
+	validStates := []string{"ACTIVE", "INACTIVE", "DISCONTINUED"}
 	var foundMatch bool
 	for _, state := range validStates {
 		if p.State == state {
@@ -130,7 +130,7 @@ func FromBytes(payloadData []byte) (*MdPayload, error) {
 
 		if payload.invalidState() {
 			return nil, &processor.InvalidTransactionError{
-				Msg: fmt.Sprintf("Invalid state (state must be one of ACTIVE, INACTIVE, DISCONTINUED): %v", payload.Attributes)}
+				Msg: fmt.Sprintf("Invalid state (state must be one of ACTIVE, INACTIVE, DISCONTINUED), GOT: %v", payload.State)}
 		}
 	}
 
