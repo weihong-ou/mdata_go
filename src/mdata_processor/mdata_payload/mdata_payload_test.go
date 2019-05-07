@@ -125,6 +125,10 @@ func compareStructs(expected, actual MdPayload) bool {
 func compareExpectedActualPayload(expectedPayload *MdPayload, actualPayload *MdPayload) bool {
 	var areEqual bool
 	if expectedPayload != nil {
+		if actualPayload == nil {
+			areEqual = false
+			return areEqual
+		}
 		areEqual = compareStructs(*expectedPayload, *actualPayload)
 	} else {
 		areEqual = reflect.TypeOf(expectedPayload) == reflect.TypeOf(actualPayload)
