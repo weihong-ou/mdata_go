@@ -41,14 +41,18 @@ func (p MdPayload) invaildChar() (bool, string) {
 }
 
 func (p *MdPayload) invalidAttributes() bool {
-	//Verify that if length of attributes > 0, they are key=value pairs in the slice of string
-	if len(p.Attributes) > 0 {
-		for _, pair := range p.Attributes {
-			if strings.Count(pair, "=") != 1 {
-				return true
-			}
+	//Return false for empty attributes
+	if len(p.Attributes) == 1 && p.Attributes[]=="" {
+		return false
+	}
+
+	// Verify they are key=value pairs in the slice of string
+	for _, pair := range p.Attributes {
+		if strings.Count(pair, "=") != 1 {
+			return true
 		}
 	}
+
 	return false
 }
 
