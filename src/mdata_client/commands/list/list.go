@@ -70,7 +70,7 @@ func (args *List) Run() error {
 			attrs := parts[1 : len(parts)-1]
 			state := parts[len(parts)-1]
 
-			fmt.Printf("%-v\t%-v\t%-v\t\n", gtin, attrs, state)
+			fmt.Printf("%-v\t%-40v\t%-v\t\n", gtin, attrs, state)
 		}
 	}
 	return nil

@@ -14,24 +14,24 @@
 # ------------------------------------------------------------------------------
 
 [Unit]
-Description=Sawtooth Mdata TP Go
+Description=Mdata Client Service
 After=network.target
-
+ 
 [Service]
 User=sawtooth
 Group=sawtooth
-EnvironmentFile=-/etc/default/sawtooth-mdata-tp-go
-ExecStart=/usr/bin/mdata-tp-go $SAWTOOTH_MDATA_TP_GO_ARGS
+EnvironmentFile=-/etc/default/sawtooth-mdata-go
 Restart=on-failure
+ExecStart=/usr/bin/mdata-tp-go $SAWTOOTH_MDATA_GO_ARGS
 
 # make sure log directory exists and owned by syslog
 PermissionsStartOnly=true
-ExecStartPre=/bin/mkdir -p /var/log/mdata_tp
-ExecStartPre=/bin/chown syslog:adm /var/log/mdata_tp
-ExecStartPre=/bin/chmod 755 /var/log/mdata_tp
+ExecStartPre=/bin/mkdir -p /var/log/mdata_client
+ExecStartPre=/bin/chown syslog:adm /var/log/mdata_client
+ExecStartPre=/bin/chmod 755 /var/log/mdata_client
 StandardOutput=syslog
 StandardError=syslog
-SyslogIdentifier=mdata_tp
-
+SyslogIdentifier=mdata_client
+ 
 [Install]
 WantedBy=multi-user.target

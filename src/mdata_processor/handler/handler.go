@@ -111,6 +111,7 @@ func (self *MdHandler) Apply(request *processor_pb2.TpProcessRequest, context *p
 		if err != nil {
 			return err
 		}
+		displayDelete(signer, payload.Gtin)
 		return mdState.DeleteProduct(payload.Gtin)
 	case "update":
 		err := validateUpdate(mdState, payload.Gtin)
@@ -171,6 +172,15 @@ func validateUpdate(mdState *mdata_state.MdState, gtin string) error {
 
 func displayUpdate(payload *mdata_payload.MdPayload, signer string, product *mdata_state.Product) {
 	s := fmt.Sprintf("+ Signer %s updated product %s with attributes %s", signer[:6], product.Gtin, product.Attributes)
+	sLength := len(s)
+	border := "+" + strings.Repeat("-", sLength-2) + "+"
+	fmt.Println(border)
+	fmt.Println(s)
+	fmt.Println(border)
+}
+
+func displayDelete(signer string, gtin string) {
+	s := fmt.Sprintf("+ Signer %s deleted product %s", signer[:6], gtin)
 	sLength := len(s)
 	border := "+" + strings.Repeat("-", sLength-2) + "+"
 	fmt.Println(border)
