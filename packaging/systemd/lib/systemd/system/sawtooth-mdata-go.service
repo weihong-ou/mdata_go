@@ -22,7 +22,7 @@ User=sawtooth
 Group=sawtooth
 EnvironmentFile=-/etc/default/sawtooth-mdata-go
 Restart=on-failure
-ExecStart=/usr/bin/mdata-tp-go $SAWTOOTH_MDATA_GO_ARGS
+ExecStart=/usr/bin/mdata-go $SAWTOOTH_MDATA_GO_ARGS
 
 # make sure log directory exists and owned by syslog
 PermissionsStartOnly=true
