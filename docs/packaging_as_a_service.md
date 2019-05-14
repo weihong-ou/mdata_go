@@ -1,19 +1,19 @@
 # Commands run to package golang as a service
 
-1. Move environment files to correct location /etc/default
-`sudo cp packaging/systemd/etc/default/sawtooth-mdata-tp-go /etc/default/sawtooth-mdata-tp-go`
-`sudo chmod 644 /etc/default/sawtooth-mdata-tp-go`
+1. Move environment files to correct location /etc/default<br>
+    `sudo cp packaging/systemd/etc/default/sawtooth-mdata-tp-go /etc/default/sawtooth-mdata-tp-go`
+    `sudo chmod 644 /etc/default/sawtooth-mdata-tp-go`
 
-2. Move service files to correct location /lib/systemd/system
-`sudo cp packaging/systemd/lib/systemd/system/sawtooth-mdata-tp-go.service /lib/systemd/system/`
-`sudo chmod 644 /lib/systemd/system/sawtooth-mdata-go.service`
+2. Move service files to correct location /lib/systemd/system<br>
+    `sudo cp packaging/systemd/lib/systemd/system/sawtooth-mdata-tp-go.service /lib/systemd/system/`
+    `sudo chmod 644 /lib/systemd/system/sawtooth-mdata-go.service`
 
-3. Move binaries to correct location /usr/bin
-`sudo cp bin/mdata-tp-go /usr/bin/`
-`sudo chmod 755 /usr/bin/mdata-tp-go`
+3. Move binaries to correct location /usr/bin<br>
+    `sudo cp bin/mdata-tp-go /usr/bin/`
+    `sudo chmod 755 /usr/bin/mdata-tp-go`
 
-4. Enable services
-`sudo systemctl enable sawtooth-mdata-tp-go.service`
+4. Enable services <br>
+    `sudo systemctl enable sawtooth-mdata-tp-go.service`
 
 # Enable logs to journalctl
 1. Uncomment the following in `/etc/rsyslog.conf`
