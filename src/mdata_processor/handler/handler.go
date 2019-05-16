@@ -19,8 +19,8 @@ package handler
 
 import (
 	"fmt"
-	"mdata_go/src/mdata_processor/mdata_payload"
-	"mdata_go/src/mdata_processor/mdata_state"
+	"github.com/tross-tyson/mdata_go/src/mdata_processor/mdata_payload"
+	"github.com/tross-tyson/mdata_go/src/mdata_processor/mdata_state"
 	"strings"
 
 	"github.com/hyperledger/sawtooth-sdk-go/logging"

@@ -29,11 +29,11 @@ import (
 	"github.com/hyperledger/sawtooth-sdk-go/protobuf/batch_pb2"
 	"github.com/hyperledger/sawtooth-sdk-go/protobuf/transaction_pb2"
 	"github.com/hyperledger/sawtooth-sdk-go/signing"
+	"github.com/tross-tyson/mdata_go/src/mdata_client/commands"  //mdata_client/commands
+	"github.com/tross-tyson/mdata_go/src/mdata_client/constants" //mdata_client/constants
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"math/rand"
-	"mdata_go/src/mdata_client/commands"
-	"mdata_go/src/mdata_client/constants"
 	"net/http"
 	"os/user"
 	"path"
