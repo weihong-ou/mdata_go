@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 # protoc 3
 curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip
