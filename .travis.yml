@@ -1,0 +1,26 @@
+language: go
+
+go:
+  - 1.12.x
+
+go_import_path: 
+  - src/mdata_processor
+  - src/mdata_client
+
+dist: xenial
+
+# Phase 1: Grab dependencies
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -y zip curl pkg-config
+
+install: ./ci-scripts/install-dependencies.sh
+
+# Phase 2: Testing
+script:
+  - go test -v ./...
+
+# Phase 3: Build Binaries
+
+
+# Phase 4: Deploy Binaries
