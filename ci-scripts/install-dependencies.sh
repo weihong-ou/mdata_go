@@ -14,6 +14,7 @@ pip3 install --user grpcio-tools
 
 # go dependencies
 go get -u google.golang.org/grpc \
+        golang.org/x/tools/go/packages \
         github.com/golang/protobuf/protoc-gen-go \
         github.com/satori/go.uuid \
         github.com/pebbe/zmq4 \
