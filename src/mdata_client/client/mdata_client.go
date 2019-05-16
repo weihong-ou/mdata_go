@@ -286,15 +286,13 @@ func (mdataClient MdataClient) sendRequest(
 		response, err = http.Get(url)
 	}
 	if err != nil {
-		return "", errors.New(
-			fmt.Sprintf("Failed to connect to REST API: %v", err))
+		return "", fmt.Errorf("Failed to connect to REST API: %v", err)
 	}
 	if response.StatusCode == 404 {
 		logger.Debug(fmt.Sprintf("%v", response))
 		return "", fmt.Errorf("No such product: %s", gtin)
 	} else if response.StatusCode >= 400 {
-		return "", errors.New(
-			fmt.Sprintf("Error %d: %s", response.StatusCode, response.Status))
+		return "", fmt.Errorf("Error %d: %s", response.StatusCode, response.Status)
 	}
 	defer response.Body.Close()
 	reponseBody, err := ioutil.ReadAll(response.Body)
@@ -324,8 +322,7 @@ func (mdataClient MdataClient) sendTransaction(c MdataClientAction, wait uint) (
 	}
 	transactionHeader, err := proto.Marshal(&rawTransactionHeader)
 	if err != nil {
-		return "", errors.New(
-			fmt.Sprintf("Unable to serialize transaction header: %v", err))
+		return "", fmt.Errorf("Unable to serialize transaction header: %v", err)
 	}
 
 	// Signature of TransactionHeader
