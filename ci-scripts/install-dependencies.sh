@@ -10,7 +10,7 @@ sudo mv protoc3/include/* /usr/local/include/
 curl -sS https://bootstrap.pypa.io/get-pip.py | sudo python3
 
 # grpcio tools
-pip3 install grpcio-tools
+pip3 install --user grpcio-tools
 
 # go dependencies
 go get -u google.golang.org/grpc \
