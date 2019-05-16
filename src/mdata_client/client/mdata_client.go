@@ -108,7 +108,7 @@ func NewMdataClient(url string, keyfile string) (MdataClient, error) {
 		privateKeyStr, err := ioutil.ReadFile(keyfile)
 		if err != nil {
 			return MdataClient{},
-				errors.New(fmt.Sprintf("Failed to read private key: %v", err))
+				fmt.Errorf("Failed to read private key: %v", err)
 		}
 		// Get private key object
 		privateKey = signing.NewSecp256k1PrivateKey(privateKeyStr)
@@ -188,7 +188,7 @@ func (mdataClient MdataClient) List() ([]string, error) {
 	err = yaml.Unmarshal([]byte(response), &responseMap)
 	if err != nil {
 		return []string{},
-			errors.New(fmt.Sprintf("Error reading response: %v", err))
+			fmt.Errorf("Error reading response: %v", err)
 	}
 	encodedEntries := responseMap["data"].([]interface{})
 
@@ -208,7 +208,7 @@ func (mdataClient MdataClient) List() ([]string, error) {
 		decodedBytes, err := base64.StdEncoding.DecodeString(stringData)
 		if err != nil {
 			return []string{},
-				errors.New(fmt.Sprint("Error decoding: %v", err))
+				fmt.Errorf("Error decoding: %v", err)
 		}
 
 		toReturn = append(toReturn, string(decodedBytes))
@@ -226,7 +226,7 @@ func (mdataClient MdataClient) Show(gtin string) (string, error) {
 	responseMap := make(map[interface{}]interface{})
 	err = yaml.Unmarshal([]byte(response), &responseMap)
 	if err != nil {
-		return "", errors.New(fmt.Sprint("Error reading response: %v", err))
+		return "", fmt.Errorf("Error reading response: %v", err)
 	}
 	data, ok := responseMap["data"].(string)
 	if !ok {
@@ -234,7 +234,7 @@ func (mdataClient MdataClient) Show(gtin string) (string, error) {
 	}
 	responseData, err := base64.StdEncoding.DecodeString(data)
 	if err != nil {
-		return "", errors.New(fmt.Sprint("Error decoding response: %v", err))
+		return "", fmt.Errorf("Error decoding response: %v", err)
 	}
 
 	strData := string(responseData)
@@ -256,7 +256,7 @@ func (mdataClient MdataClient) getStatus(
 	responseMap := make(map[interface{}]interface{})
 	err = yaml.Unmarshal([]byte(response), &responseMap)
 	if err != nil {
-		return "", errors.New(fmt.Sprintf("Error reading response: %v", err))
+		return "", fmt.Errorf("Error reading response: %v", err)
 	}
 	entry :=
 		responseMap["data"].([]interface{})[0].(map[interface{}]interface{})
@@ -291,7 +291,7 @@ func (mdataClient MdataClient) sendRequest(
 	}
 	if response.StatusCode == 404 {
 		logger.Debug(fmt.Sprintf("%v", response))
-		return "", errors.New(fmt.Sprintf("No such product: %s", gtin))
+		return "", fmt.Errorf("No such product: %s", gtin)
 	} else if response.StatusCode >= 400 {
 		return "", errors.New(
 			fmt.Sprintf("Error %d: %s", response.StatusCode, response.Status))
@@ -299,7 +299,7 @@ func (mdataClient MdataClient) sendRequest(
 	defer response.Body.Close()
 	reponseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		return "", errors.New(fmt.Sprintf("Error reading response: %v", err))
+		return "", fmt.Errorf("Error reading response: %v", err)
 	}
 	return string(reponseBody), nil
 }
@@ -366,7 +366,7 @@ func (mdataClient MdataClient) sendTransaction(c MdataClientAction, wait uint) (
 			if err != nil {
 				return "", err
 			}
-			waitTime = uint(time.Now().Sub(startTime))
+			waitTime = uint(time.Since(startTime))
 			if status != "PENDING" {
 				return response, nil
 			}
