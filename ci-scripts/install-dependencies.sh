@@ -7,11 +7,10 @@ sudo mv protoc3/bin/* /usr/local/bin/
 sudo mv protoc3/include/* /usr/local/include/
 
 # grpc
-python3 -m pip install grpcio-tools
+pip3 install grpcio-tools
 
 # go dependencies
-go install github.com/golang/mock/mockgen && \
-    go get -u google.golang.org/grpc \
+go get -u google.golang.org/grpc \
         github.com/golang/protobuf/protoc-gen-go \
         github.com/satori/go.uuid \
         github.com/pebbe/zmq4 \
@@ -21,6 +20,8 @@ go install github.com/golang/mock/mockgen && \
         github.com/stretchr/testify/mock \
         github.com/btcsuite/btcd/btcec \
         gopkg.in/yaml.v2
+
+go install github.com/golang/mock/mockgen
 
 cd $GOPATH/src/github.com/hyperledger/sawtooth-sdk-go && \
         go generate
