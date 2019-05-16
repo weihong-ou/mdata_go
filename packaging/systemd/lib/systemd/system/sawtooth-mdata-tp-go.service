@@ -21,7 +21,7 @@ After=network.target
 User=sawtooth
 Group=sawtooth
 EnvironmentFile=-/etc/default/sawtooth-mdata-tp-go
-ExecStart=/usr/bin/mdata-tp-go $SAWTOOTH_MDATA_TP_GO_ARGS
+ExecStart=/usr/bin/sawtooth-mdata-tp-go $SAWTOOTH_MDATA_TP_GO_ARGS
 Restart=on-failure
 
 # make sure log directory exists and owned by syslog
