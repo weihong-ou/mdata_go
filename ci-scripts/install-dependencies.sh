@@ -6,9 +6,6 @@ unzip protoc-3.7.1-linux-x86_64.zip -d protoc3
 sudo mv protoc3/bin/* /usr/local/bin/
 sudo mv protoc3/include/* /usr/local/include/
 
-# grpc
-pip3 install grpcio-tools
-
 # go dependencies
 go get -u google.golang.org/grpc \
         github.com/golang/protobuf/protoc-gen-go \
