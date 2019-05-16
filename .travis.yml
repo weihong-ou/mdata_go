@@ -3,16 +3,14 @@ language: go
 go:
   - 1.12.x
 
-go_import_path: 
-  - src/mdata_processor
-  - src/mdata_client
+go_import_path: mdata_go/src
 
 dist: xenial
 
 # Phase 1: Grab dependencies
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -y zip curl pkg-config
+  - sudo apt-get install -y pkg-config
 
 install: ./ci-scripts/install-dependencies.sh
 
