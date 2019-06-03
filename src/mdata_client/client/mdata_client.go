@@ -340,14 +340,12 @@ func (mdataClient MdataClient) sendTransaction(c MdataClientAction, wait uint) (
 	rawBatchList, err := mdataClient.createBatchList(
 		[]*transaction_pb2.Transaction{&transaction})
 	if err != nil {
-		return "", errors.New(
-			fmt.Sprintf("Unable to construct batch list: %v", err))
+		return "", fmt.Errorf("Unable to construct batch list: %v", err)
 	}
 	batchId := rawBatchList.Batches[0].HeaderSignature
 	batchList, err := proto.Marshal(&rawBatchList)
 	if err != nil {
-		return "", errors.New(
-			fmt.Sprintf("Unable to serialize batch list: %v", err))
+		return "", fmt.Errorf("Unable to serialize batch list: %v", err)
 	}
 
 	if wait > 0 {
@@ -402,8 +400,7 @@ func (mdataClient MdataClient) createBatchList(
 	}
 	batchHeader, err := proto.Marshal(&rawBatchHeader)
 	if err != nil {
-		return batch_pb2.BatchList{}, errors.New(
-			fmt.Sprintf("Unable to serialize batch header: %v", err))
+		return batch_pb2.BatchList{}, fmt.Errorf("Unable to serialize batch header: %v", err)
 	}
 
 	// Signature of BatchHeader

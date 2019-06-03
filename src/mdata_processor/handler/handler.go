@@ -218,7 +218,7 @@ func validateDelete(mdState *mdata_state.MdState, gtin string) error {
 		return &processor.InvalidTransactionError{Msg: "Delete requires an existing product"}
 	}
 	if product.State != "INACTIVE" {
-		return &processor.InvalidTransactionError{Msg: "Delete requires an INACTIVE product. Please deactivate the product with `mdata deactivate <GTIN>`."}
+		return &processor.InvalidTransactionError{Msg: "Delete requires an INACTIVE product. Please deactivate the product with `mdata set <GTIN> INACTIVE`."}
 	}
 	return nil
 }
