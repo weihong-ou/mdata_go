@@ -6,8 +6,7 @@ git:
 dist: xenial
 before_install:
 - sudo apt-get update
-- sudo apt-get install -y  -q --allow-downgrades pkg-config build-essential openssl
-  libzmq3-dev libssl-dev
+- sudo apt-get install -y  -q --allow-downgrades pkg-config build-essential openssllibzmq3-dev libssl-dev
 install: "./ci-scripts/install-dependencies.sh"
 script:
 - go test -v ./...
@@ -17,7 +16,7 @@ deploy:
   provider: releases
   skip_cleanup: true
   api_key:
-    secure: iLjHZPv4JDetBq1waNZ68luoEtH9upsO9Vc1EX77Ej/nanSDRZopFRL1xIfu9a2ZeGA8qRv56M/JftST3mB0Gvox3onA8dvhcPFeDyypfCc3T8HMo5n8mxbE3gT3Mcp8U6JiRqOrCsnQoewfwBZgXBjVAwlZYWrKUNJnflGnbzL+8/ckxWN4eFj+nv5+RBYONDYuypG8PWkz0sAY50EIf3gLZXuuDvgDYs+5Ewx7qegZPuqWDBvYiqf/Er1kmH0DQdOiJ9k/f0SvwaNu8Im5MqcF/PBGKwdscemVIgIWrf2WmY9JULhFdj3aKecixGkOnQDmbGA1riMgfxEgK6nmn9nfffG1pkBA1k/ntuVP6bB1r3akDDKy92JCyZA7OMesLHsjcXN43Rcz/cevuFqlld6L35rXrIjANM4rQWRv00o9iFhZvXayjYEyQq5PRAr+9AE2iC0tMGswyc9nmoYr9hQ4wwNoWbGCK0A7KvG5GIC28lOZgbohuX0LeIkgWsHGvG7rSPR/0qAMJ1W/Ke5xgwpzRzZG/BBj1S9FoEV3tJ7oND60vntdfuDDZcisHXYTY/z9XdiiVbdiRzb+fNB+oqj8EAcd0I2/FkfiL29Ar/oCeI+xKcbXk9JilDr6mCqk0RScpwNRLhR4h/Fu5jS0d+FcCZQFCHRukDNG+RLe4x0=
+    secure: eH+M3yBYIjv9EsME0W3UIElqj16Ld4+KWhLfmbQxeo2LNTguE9ocBJG+8mxuCl0LEqEkushkHABDh2yU22fGhg4LCLjFWb/8HPxrLuuENU1WeeTsI/K4MyQMYUDrKmZ91RTG7t3eSZjSkjkfvkxLLXv7Z7p5PvtHIjDutlN7lORRdequF0F2m7AsbHhw8W1pJhq6ljrgrSgac219IMRBy2aRCmjkjpQ2H8RITkD8X51gn2j9wNWMsBRfk3i3eycvJSzNFZepjlBtmVkIS531Mz5SK1jASpFc+dkMLziRizet439T5r14MGh8wSX7XMCxieoBOQnpJIMTjyCZojGky/DI4OR2YHot1lkOu0UhvJWQoXVBom+eDdEr3pzQWM37ou1AsBFY8aAW0d/lCH335nZBCiH/L7d3SYTpUFwfAn41sg5q5m0SxHO9TmW7JTu2upU2ED5KisboscDy2/tL7khBqrjJ61V/plS4fqKSqq/9PVBkEo/xs3JTpPKEMVLqXRQhfBOgGFjg/0YSwsjL84zuC2itMIHW85qLGC9YlEgc/koOVWXKV1IvV41eW29Pb9+Xx6yVzPIQBBE/mIfSY87End1DujEpevNTF2Ly/XvzI6SMHNoOoYzpWH22cGxzxeaIJeG4NsFxpidEiBjBi3kJO3JBv0NDf3X2Z2n4HQo=
   file:
   - mdata
   - sawtooth-mdata-tp-go
