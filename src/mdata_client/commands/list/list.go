@@ -20,7 +20,7 @@ package list
 import (
 	"fmt"
 	flags "github.com/jessevdk/go-flags"
-	"mdata_go/src/mdata_client/client"
+	"github.com/tross-tyson/mdata_go/src/mdata_client/client"
 	"strings"
 )
 

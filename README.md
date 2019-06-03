@@ -21,13 +21,40 @@ Please read and review the RFC located [here](docs/RFC.md).
     sudo mv protoc3/include/* /usr/local/include/
     ```
 
-2. Install python's grpcio-tools library
+3. Install python's grpcio-tools library
     ```
     sudo su - 
     python3 -m pip install grpcio-tools
     ```
 
-3. Install golang version 1.12
+# Installation
+
+Please see [Packaging As A Service](docs/PackageAsService.md)
+
+# Usage
+**List** available gtins
+`mdata list`
+
+**Query** for specific gtin, display key/value pair attributes
+`mdata show <gtin>`
+
+**Create** new product, provide optional attributes
+`mdata create <gtin> [key:value]`
+
+**Update** existing product, provide new attribute(s)
+`mdata update <gtin> <key:value>` 
+
+**Delete** existing product; requires a product in state INACTIVE
+`mdata delete <gtin>`
+
+**Set** state of existing product
+`mdata set <gtin> <ACTIVE|INACTIVE|DISCONTINUED>`
+
+---
+
+# Contributing: Development Requirements
+
+1. Install golang version 1.12
     ```
     wget https://dl.google.com/go/go1.12.2.linux-amd64.tar.gz
 
@@ -43,7 +70,7 @@ Please read and review the RFC located [here](docs/RFC.md).
     export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
     ```
 
-3. Install go dependencies
+2. Install go dependencies
     ```
     go install github.com/golang/mock/mockgen && \
     go get -u google.golang.org/grpc \
@@ -60,35 +87,6 @@ Please read and review the RFC located [here](docs/RFC.md).
     cd $GOPATH/src/github.com/hyperledger/sawtooth-sdk-go && \
         go generate
     ```
-
-# Resetting the Sawtooth Test Network
-After shutting down all instances of a test network, I find that the network can no longer reach consensus when rebooted. Since I do not need the network up all the time, just when I test, I find it simpler to rebuild the network when I restart all the nodes.
-
-## Delete Existing Sawtooth Data
-```
-sudo su -
-rm -r /var/lib/sawtooth/*
-exit
-```
-
-## Generate new genesis block
-```
-sudo sawset genesis -k /etc/sawtooth/keys/validator.priv -o config-genesis.batch &&\
-cd /tmp &&
-
-sudo -u sawtooth sawset proposal create -k /etc/sawtooth/keys/validator.priv \
-sawtooth.consensus.algorithm.name=pbft \
-sawtooth.consensus.algorithm.version=0.1 \
-sawtooth.consensus.pbft.peers=['"'$(paste ~/fleet_keys/*.pub -d , | sed s/,/\",\"/g)'"'] \
-sawtooth.consensus.pbft.view_change_timeout=4000 \
-sawtooth.consensus.pbft.message_timeout=10 \
-sawtooth.consensus.pbft.max_log_size=1000 \
--o config.batch &&
-
-sudo mv config.batch ~/ &&\
-cd &&\
-sudo -u sawtooth sawadm genesis config-genesis.batch config.batch
-```
 
 # Manual Testing Results
 Read @ [here](docs/TestCases.md)

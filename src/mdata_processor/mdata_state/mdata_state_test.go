@@ -115,8 +115,7 @@ func TestSetProduct(t *testing.T) {
 		t.Logf("Running test case: %s", name)
 
 		testContext := &mockContext{}
-		testProductSlice := make([]*Product, 1)
-		testProductSlice[0] = &testProduct
+		testProductSlice := []*Product{&testProduct}
 
 		if name == "newProduct" {
 			returnState := make(map[string][]byte)
