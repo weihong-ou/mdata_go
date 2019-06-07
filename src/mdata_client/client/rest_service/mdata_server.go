@@ -64,13 +64,11 @@ type ProductStateUpdate struct {
 	State string `json:"new_state" xml:"new_state" form:"new_state" query:"new_state"`
 }
 
-func (p Product) isValid(gtinrequired bool) bool {
-	if gtinrequired {
-		gtin := p.Gtin
-		pattern := regexp.MustCompile(`^\d{14}$`)
-		if !pattern.MatchString(gtin) {
-			return false
-		}
+func (p Product) isValid() bool {
+	gtin := p.Gtin
+	pattern := regexp.MustCompile(`^\d{14}$`)
+	if !pattern.MatchString(gtin) {
+		return false
 	}
 
 	//attributes are all optional, so no need to validate
@@ -84,16 +82,15 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.CORS()) //for now open to all origins
 
-
-	e.POST("/product/create", func(c echo.Context) error {
+	e.POST("/product/create/:gtin", func(c echo.Context) error {
 		p := Product{}
 		if err := c.Bind(&p); err != nil {
 			//first logs the error
 			e.Logger.Errorf("error binding request product: %v", err)
 			return echo.NewHTTPError(http.StatusBadRequest, "error binding request message to product")
 		}
-
-		if !p.isValid(false) {
+		p.Gtin = c.Param("gtin")
+		if !p.isValid() {
 			return echo.NewHTTPError(http.StatusBadRequest, "product payload missing required fields or has invalid field values")
 		}
 
@@ -110,7 +107,7 @@ func main() {
 			return echo.NewHTTPError(http.StatusBadRequest, "error binding request message to product")
 		}
 		p.Gtin = c.Param("gtin")
-		if !p.isValid(true) {
+		if !p.isValid() {
 			return echo.NewHTTPError(http.StatusBadRequest, "product payload missing required fields or has invalid field values")
 		}
 
@@ -202,7 +199,7 @@ func main() {
 		if err != nil {
 			port = 8888
 			fmt.Fprintf(os.Stderr, "port should be an integer, using default port 8888")
-		} 
+		}
 	}
 	e.Logger.Fatal(e.Start(":" + strconv.Itoa(port)))
 
