@@ -6,7 +6,7 @@
 
 2. Move service files to correct location /lib/systemd/system<br>
     `sudo cp packaging/systemd/lib/systemd/system/sawtooth-mdata-tp-go.service /lib/systemd/system/`<br>
-    `sudo chmod 644 /lib/systemd/system/sawtooth-mdata-go.service`<br>
+    `sudo chmod 644 /lib/systemd/system/sawtooth-mdata-tp-go.service`<br>
 
 3. Move binaries to correct location /usr/bin<br>
   - The processor
