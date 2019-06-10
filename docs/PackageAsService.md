@@ -21,4 +21,4 @@
     `sudo systemctl enable sawtooth-mdata-tp-go.service`<br>
 
 5. Start service <br>
-    `sudo systemctl start sawtooth-mdata-tp-go.servcie`<br>
+    `sudo systemctl start sawtooth-mdata-tp-go.service`<br>
