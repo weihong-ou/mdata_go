@@ -17,7 +17,8 @@
     `sudo cp mdata /usr/bin/mdata`<br>
     `sudo chmod 755 /usr/bin/mdata`<br>
 
-4. Enable service <br>
+4. Enable service and reload daemon <br>
+    `sudo systemctl daemon-reload`<br>
     `sudo systemctl enable sawtooth-mdata-tp-go.service`<br>
 
 5. Start service <br>
